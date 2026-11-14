@@ -88,13 +88,15 @@ public class ExaminationApiController {
             @PathVariable Long id,
             @Valid @RequestBody ExaminationDTO examinationDTO,
             Authentication auth) {
+        ExaminationDTO existing = examinationService.getExaminationById(id);
         if (isDoctor(auth)) {
             Long myDoctorId = getDoctorIdForUser(auth.getName());
-            ExaminationDTO existing = examinationService.getExaminationById(id);
             if (!existing.getDoctorId().equals(myDoctorId)) {
                 throw new AccessDeniedException("Doctors can only edit their own examinations");
             }
             examinationDTO.setDoctorId(myDoctorId);
+            // Doctor cannot reassign patient
+            examinationDTO.setPatientId(existing.getPatientId());
         }
         return examinationService.updateExamination(id, examinationDTO);
     }

@@ -48,8 +48,9 @@ public class DataInitializer implements ApplicationRunner {
     }
 
     private void initSampleData() {
+        Doctor gp;
         if (doctorRepository.count() == 0) {
-            Doctor gp = Doctor.builder()
+            gp = Doctor.builder()
                     .identificationNumber("DOC001")
                     .name("Д-р Иванов")
                     .speciality("Общопрактикуващ лекар")
@@ -63,27 +64,32 @@ public class DataInitializer implements ApplicationRunner {
                     .build();
             doctorRepository.save(gp);
             doctorRepository.save(specialist);
+        } else {
+            gp = doctorRepository.findAll().stream()
+                    .filter(Doctor::isGeneralPractitioner)
+                    .findFirst()
+                    .orElse(null);
+        }
 
-            if (patientRepository.count() == 0) {
-                Patient patient = Patient.builder()
-                        .name("Георги Георгиев")
-                        .egn("8501011234")
-                        .generalPractitioner(gp)
-                        .healthInsured(true)
-                        .build();
-                patientRepository.save(patient);
-            }
+        if (patientRepository.count() == 0 && gp != null) {
+            Patient patient = Patient.builder()
+                    .name("Георги Георгиев")
+                    .egn("8501011234")
+                    .generalPractitioner(gp)
+                    .healthInsured(true)
+                    .build();
+            patientRepository.save(patient);
+        }
 
-            if (userRepository.findByUsername("doctor1").isEmpty()) {
-                Role doctorRole = roleRepository.findByName("DOCTOR").orElseThrow();
-                User doctorUser = User.builder()
-                        .username("doctor1")
-                        .password(passwordEncoder.encode("doctor123"))
-                        .roles(Set.of(doctorRole))
-                        .doctor(gp)
-                        .build();
-                userRepository.save(doctorUser);
-            }
+        if (userRepository.findByUsername("doctor1").isEmpty() && gp != null) {
+            Role doctorRole = roleRepository.findByName("DOCTOR").orElseThrow();
+            User doctorUser = User.builder()
+                    .username("doctor1")
+                    .password(passwordEncoder.encode("doctor123"))
+                    .roles(Set.of(doctorRole))
+                    .doctor(gp)
+                    .build();
+            userRepository.save(doctorUser);
         }
     }
 }
