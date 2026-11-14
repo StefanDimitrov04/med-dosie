@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{_layout :: head('Болничен лист')}"></head>
+<body>
+<nav th:replace="~{_layout :: navbar}"></nav>
+<div class="container">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4>Болничен лист #<span th:text="${sickLeave.id}"></span></h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-4">От дата</dt>
+                <dd class="col-sm-8" th:text="${sickLeave.startDate}"></dd>
+                <dt class="col-sm-4">Продължителност (дни)</dt>
+                <dd class="col-sm-8" th:text="${sickLeave.durationDays}"></dd>
+                <dt class="col-sm-4">Пациент</dt>
+                <dd class="col-sm-8" th:text="${sickLeave.patientName}"></dd>
+                <dt class="col-sm-4">Лекар</dt>
+                <dd class="col-sm-8" th:text="${sickLeave.doctorName}"></dd>
+            </dl>
+        </div>
+        <div class="card-footer">
+            <a th:href="@{/sick-leaves}" class="btn btn-secondary">Назад</a>
+            <a sec:authorize="hasAnyRole('DOCTOR','ADMIN')"
+               th:href="@{/sick-leaves/{id}/edit(id=${sickLeave.id})}" class="btn btn-warning">Редакция</a>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{_layout :: head('Пациент')}"></head>
+<body>
+<nav th:replace="~{_layout :: navbar}"></nav>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 th:text="${patient.id == null} ? 'Нов пациент' : 'Редакция на пациент'"></h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="${patient.id == null} ? @{/patients/new} : @{/patients/{id}/edit(id=${patient.id})}"
+                          th:object="${patient}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Име *</label>
+                            <input type="text" class="form-control" th:field="*{name}"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"/>
+                            <div class="invalid-feedback" th:errors="*{name}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ЕГН * (10 цифри)</label>
+                            <input type="text" class="form-control" th:field="*{egn}"
+                                   th:classappend="${#fields.hasErrors('egn')} ? 'is-invalid'"/>
+                            <div class="invalid-feedback" th:errors="*{egn}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Общопрактикуващ лекар *</label>
+                            <select class="form-select" th:field="*{generalPractitionerId}"
+                                    th:classappend="${#fields.hasErrors('generalPractitionerId')} ? 'is-invalid'">
+                                <option value="">-- Избери --</option>
+                                <option th:each="d : ${doctors}" th:value="${d.id}" th:text="${d.name}"></option>
+                            </select>
+                            <div class="invalid-feedback" th:errors="*{generalPractitionerId}"></div>
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" th:field="*{healthInsured}"/>
+                            <label class="form-check-label">Здравноосигурен</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Запази</button>
+                        <a th:href="@{/patients}" class="btn btn-secondary ms-2">Отказ</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

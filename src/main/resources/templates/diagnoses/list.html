@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{_layout :: head('Диагнози')}"></head>
+<body>
+<nav th:replace="~{_layout :: navbar}"></nav>
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Диагнози</h2>
+        <a sec:authorize="hasAnyRole('DOCTOR','ADMIN')" th:href="@{/diagnoses/new}" class="btn btn-success">+ Добави диагноза</a>
+    </div>
+    <table class="table table-striped table-hover">
+        <thead class="table-primary">
+        <tr>
+            <th>#</th>
+            <th>Название</th>
+            <th>Описание</th>
+            <th sec:authorize="hasAnyRole('DOCTOR','ADMIN')">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="d : ${diagnoses}">
+            <td th:text="${d.id}"></td>
+            <td th:text="${d.name}"></td>
+            <td th:text="${d.description}"></td>
+            <td sec:authorize="hasAnyRole('DOCTOR','ADMIN')">
+                <a th:href="@{/diagnoses/{id}/edit(id=${d.id})}" class="btn btn-sm btn-warning">Редакция</a>
+                <form sec:authorize="hasRole('ADMIN')"
+                      th:action="@{/diagnoses/{id}/delete(id=${d.id})}" method="post" class="d-inline"
+                      onsubmit="return confirm('Изтриване на диагноза?')">
+                    <button class="btn btn-sm btn-danger" type="submit">Изтрий</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(diagnoses)}">
+            <td colspan="4" class="text-center text-muted">Няма диагнози.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

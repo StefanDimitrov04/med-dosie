@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{_layout :: head('Преглед')}"></head>
+<body>
+<nav th:replace="~{_layout :: navbar}"></nav>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 th:text="${examination.id == null} ? 'Нов преглед' : 'Редакция на преглед'"></h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="${examination.id == null} ? @{/examinations/new} : @{/examinations/{id}/edit(id=${examination.id})}"
+                          th:object="${examination}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Дата *</label>
+                            <input type="date" class="form-control" th:field="*{date}"
+                                   th:classappend="${#fields.hasErrors('date')} ? 'is-invalid'"/>
+                            <div class="invalid-feedback" th:errors="*{date}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Лекар *</label>
+                            <select class="form-select" th:field="*{doctorId}"
+                                    th:classappend="${#fields.hasErrors('doctorId')} ? 'is-invalid'">
+                                <option value="">-- Избери --</option>
+                                <option th:each="d : ${doctors}" th:value="${d.id}" th:text="${d.name}"></option>
+                            </select>
+                            <div class="invalid-feedback" th:errors="*{doctorId}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Пациент *</label>
+                            <select class="form-select" th:field="*{patientId}"
+                                    th:classappend="${#fields.hasErrors('patientId')} ? 'is-invalid'">
+                                <option value="">-- Избери --</option>
+                                <option th:each="p : ${patients}" th:value="${p.id}" th:text="${p.name}"></option>
+                            </select>
+                            <div class="invalid-feedback" th:errors="*{patientId}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Диагнози</label>
+                            <select class="form-select" name="diagnosisIds" multiple size="5">
+                                <option th:each="d : ${diagnoses}"
+                                        th:value="${d.id}"
+                                        th:text="${d.name}"
+                                        th:selected="${examination.diagnosisIds != null and examination.diagnosisIds.contains(d.id)}">
+                                </option>
+                            </select>
+                            <small class="text-muted">Задръжте Ctrl за избор на няколко.</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Лечение</label>
+                            <textarea class="form-control" th:field="*{treatment}" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Цена *</label>
+                            <input type="number" step="0.01" class="form-control" th:field="*{price}"
+                                   th:classappend="${#fields.hasErrors('price')} ? 'is-invalid'"/>
+                            <div class="invalid-feedback" th:errors="*{price}"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Запази</button>
+                        <a th:href="@{/examinations}" class="btn btn-secondary ms-2">Отказ</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{_layout :: head('Детайли за пациент')}"></head>
+<body>
+<nav th:replace="~{_layout :: navbar}"></nav>
+<div class="container">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 th:text="${patient.name}"></h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-4">ЕГН</dt>
+                <dd class="col-sm-8" th:text="${patient.egn}"></dd>
+                <dt class="col-sm-4">Общопрактикуващ лекар</dt>
+                <dd class="col-sm-8" th:text="${patient.generalPractitionerName}"></dd>
+                <dt class="col-sm-4">Здравноосигурен</dt>
+                <dd class="col-sm-8" th:text="${patient.healthInsured} ? 'Да' : 'Не'"></dd>
+            </dl>
+        </div>
+        <div class="card-footer">
+            <a th:href="@{/patients}" class="btn btn-secondary">Назад</a>
+            <a sec:authorize="hasRole('ADMIN')" th:href="@{/patients/{id}/edit(id=${patient.id})}" class="btn btn-warning">Редакция</a>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

@@ -57,6 +57,9 @@ public class SecurityConfig {
                 // GET — patient PII and stats visible only to doctor/admin
                 .requestMatchers(HttpMethod.GET, "/api/patients/**").hasAnyRole("DOCTOR", "ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/stats/**").hasAnyRole("DOCTOR", "ADMIN")
+                .requestMatchers("/patients/**").hasAnyRole("DOCTOR", "ADMIN")
+                .requestMatchers("/statistics/**").hasAnyRole("DOCTOR", "ADMIN")
+                .requestMatchers("/users/**").hasRole("ADMIN")
 
                 // Sick leave reads — own (patient) handled in controller; list requires doctor/admin
                 .requestMatchers(HttpMethod.GET, "/api/sick-leaves").hasAnyRole("DOCTOR", "ADMIN")

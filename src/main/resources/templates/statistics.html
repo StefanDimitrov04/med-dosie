@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{_layout :: head('Статистика')}"></head>
+<body>
+<nav th:replace="~{_layout :: navbar}"></nav>
+<div class="container">
+    <h2 class="mb-4">Статистика и справки</h2>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">Най-честа диагноза</div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li th:each="d : ${mostCommonDiagnosis}" th:text="${d.name}"></li>
+                        <li th:if="${#lists.isEmpty(mostCommonDiagnosis)}" class="text-muted">Няма данни.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">ОПЛ и брой пациенти</div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>Лекар</th><th>Пациенти</th></tr></thead>
+                        <tbody>
+                        <tr th:each="row : ${gpsWithPatientCount}">
+                            <td th:text="${row['doctorName']}"></td>
+                            <td th:text="${row['patientCount']}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(gpsWithPatientCount)}">
+                            <td colspan="2" class="text-muted">Няма данни.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">Обща сума платена от пациенти</div>
+                <div class="card-body">
+                    <h4 th:text="${totalPaidByPatients != null} ? ${totalPaidByPatients} + ' лв.' : '0 лв.'"></h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">Платено от пациенти по лекар</div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>Лекар</th><th>Сума</th></tr></thead>
+                        <tbody>
+                        <tr th:each="row : ${paidByPatientsPerDoctor}">
+                            <td th:text="${row['doctorName']}"></td>
+                            <td th:text="${row['total']} + ' лв.'"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(paidByPatientsPerDoctor)}">
+                            <td colspan="2" class="text-muted">Няма данни.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-warning">Брой прегледи по лекар</div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>Лекар</th><th>Прегледи</th></tr></thead>
+                        <tbody>
+                        <tr th:each="row : ${visitsPerDoctor}">
+                            <td th:text="${row['doctorName']}"></td>
+                            <td th:text="${row['count']}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(visitsPerDoctor)}">
+                            <td colspan="2" class="text-muted">Няма данни.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-warning">Месец с най-много болнични</div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>Месец</th><th>Година</th><th>Брой</th></tr></thead>
+                        <tbody>
+                        <tr th:each="row : ${monthWithMostSickLeaves}">
+                            <td th:text="${row['month']}"></td>
+                            <td th:text="${row['year']}"></td>
+                            <td th:text="${row['count']}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(monthWithMostSickLeaves)}">
+                            <td colspan="3" class="text-muted">Няма данни.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">Лекари с най-много болнични</div>
+                <div class="card-body">
+                    <table class="table table-sm mb-0">
+                        <thead><tr><th>Лекар</th><th>Болнични</th></tr></thead>
+                        <tbody>
+                        <tr th:each="row : ${doctorsWithMostSickLeaves}">
+                            <td th:text="${row['doctorName']}"></td>
+                            <td th:text="${row['count']}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(doctorsWithMostSickLeaves)}">
+                            <td colspan="2" class="text-muted">Няма данни.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{_layout :: head('Болничен лист')}"></head>
+<body>
+<nav th:replace="~{_layout :: navbar}"></nav>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 th:text="${sickLeave.id == null} ? 'Нов болничен лист' : 'Редакция на болничен лист'"></h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="${sickLeave.id == null} ? @{/sick-leaves/new} : @{/sick-leaves/{id}/edit(id=${sickLeave.id})}"
+                          th:object="${sickLeave}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">От дата *</label>
+                            <input type="date" class="form-control" th:field="*{startDate}"
+                                   th:classappend="${#fields.hasErrors('startDate')} ? 'is-invalid'"/>
+                            <div class="invalid-feedback" th:errors="*{startDate}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Брой дни *</label>
+                            <input type="number" class="form-control" th:field="*{durationDays}"
+                                   th:classappend="${#fields.hasErrors('durationDays')} ? 'is-invalid'"/>
+                            <div class="invalid-feedback" th:errors="*{durationDays}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Преглед *</label>
+                            <select class="form-select" th:field="*{examinationId}"
+                                    th:classappend="${#fields.hasErrors('examinationId')} ? 'is-invalid'">
+                                <option value="">-- Избери --</option>
+                                <option th:each="e : ${examinations}"
+                                        th:value="${e.id}"
+                                        th:text="${e.patientName} + ' - ' + ${e.date}"></option>
+                            </select>
+                            <div class="invalid-feedback" th:errors="*{examinationId}"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Запази</button>
+                        <a th:href="@{/sick-leaves}" class="btn btn-secondary ms-2">Отказ</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{_layout :: head('Диагноза')}"></head>
+<body>
+<nav th:replace="~{_layout :: navbar}"></nav>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 th:text="${diagnosis.id == null} ? 'Нова диагноза' : 'Редакция на диагноза'"></h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="${diagnosis.id == null} ? @{/diagnoses/new} : @{/diagnoses/{id}/edit(id=${diagnosis.id})}"
+                          th:object="${diagnosis}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Название *</label>
+                            <input type="text" class="form-control" th:field="*{name}"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"/>
+                            <div class="invalid-feedback" th:errors="*{name}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Описание</label>
+                            <textarea class="form-control" th:field="*{description}" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Запази</button>
+                        <a th:href="@{/diagnoses}" class="btn btn-secondary ms-2">Отказ</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

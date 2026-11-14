@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{_layout :: head('Нов потребител')}"></head>
+<body>
+<nav th:replace="~{_layout :: navbar}"></nav>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5>Регистрация на нов потребител</h5>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/users/register}" th:object="${registerDTO}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Потребителско име *</label>
+                            <input type="text" class="form-control" th:field="*{username}"
+                                   th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"/>
+                            <div class="invalid-feedback" th:errors="*{username}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Парола *</label>
+                            <input type="password" class="form-control" th:field="*{password}"
+                                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"/>
+                            <div class="invalid-feedback" th:errors="*{password}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Роля</label>
+                            <select class="form-select" th:field="*{role}">
+                                <option value="ADMIN">ADMIN</option>
+                                <option value="DOCTOR">DOCTOR</option>
+                                <option value="PATIENT" selected>PATIENT</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Свързан лекар (за DOCTOR роля)</label>
+                            <select class="form-select" th:field="*{doctorId}">
+                                <option value="">-- Не е избран --</option>
+                                <option th:each="d : ${doctors}" th:value="${d.id}" th:text="${d.name}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Свързан пациент (за PATIENT роля)</label>
+                            <select class="form-select" th:field="*{patientId}">
+                                <option value="">-- Не е избран --</option>
+                                <option th:each="p : ${patients}" th:value="${p.id}" th:text="${p.name}"></option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Регистрирай</button>
+                        <a th:href="@{/}" class="btn btn-secondary ms-2">Отказ</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
