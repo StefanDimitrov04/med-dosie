@@ -20,6 +20,9 @@
                     <div th:if="${param.logout}" class="alert alert-success">
                         Успешно излязохте от системата.
                     </div>
+                    <div th:if="${param.registered}" class="alert alert-success">
+                        Регистрацията е успешна! Влезте с вашите данни.
+                    </div>
                     <form th:action="@{/login}" method="post">
                         <div class="mb-3">
                             <label for="username" class="form-label">Потребителско име</label>
@@ -31,6 +34,9 @@
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Вход</button>
                     </form>
+                </div>
+                <div class="card-footer text-center">
+                    Нямате акаунт? <a th:href="@{/register}">Регистрирайте се тук</a>
                 </div>
             </div>
         </div>

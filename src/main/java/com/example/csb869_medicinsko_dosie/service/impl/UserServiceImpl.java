@@ -2,6 +2,7 @@ package com.example.csb869_medicinsko_dosie.service.impl;
 
 import com.example.csb869_medicinsko_dosie.data.entity.*;
 import com.example.csb869_medicinsko_dosie.data.repo.*;
+import com.example.csb869_medicinsko_dosie.dto.PublicRegisterDTO;
 import com.example.csb869_medicinsko_dosie.dto.RegisterDTO;
 import com.example.csb869_medicinsko_dosie.exception.ResourceNotFoundException;
 import com.example.csb869_medicinsko_dosie.service.UserService;
@@ -63,4 +64,55 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
     }
-}
+
+    @Override
+    public void registerPublic(PublicRegisterDTO dto) {
+        if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("Потребителското име вече съществува");
+        }
+
+        String roleName = ("DOCTOR".equalsIgnoreCase(dto.getRole())) ? "DOCTOR" : "PATIENT";
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + roleName));
+
+        User user = new User();
+        user.setUsername(dto.getUsername());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setRoles(new HashSet<>(Set.of(role)));
+
+        if ("PATIENT".equals(roleName)) {
+            Patient patient = new Patient();
+            patient.setName(dto.getName());
+            patient.setEgn(dto.getEgn());
+            patient.setHealthInsured(false);
+            if (dto.getGeneralPractitionerId() != null) {
+                Doctor gp = doctorRepository.findById(dto.getGeneralPractitionerId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Лекарят не е намерен"));
+                patient.setGeneralPractitioner(gp);
+            }
+            patient = patientRepository.save(patient);
+            user.setPatient(patient);
+        } else {
+            // DOCTOR — link to existing doctor profile or create new
+            if (dto.getExistingDoctorId() != null) {
+                Doctor doctor = doctorRepository.findById(dto.getExistingDoctorId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Лекарят не е намерен"));
+                user.setDoctor(doctor);
+            } else {
+                Doctor doctor = new Doctor();
+                doctor.setName(dto.getName());
+                doctor.setIdentificationNumber(dto.getIdentificationNumber() != null ? dto.getIdentificationNumber() : "");
+                doctor.setSpeciality(dto.getSpeciality() != null ? dto.getSpeciality() : "");
+                doctor.setGeneralPractitioner(false);
+                doctor = doctorRepository.save(doctor);
+                user.setDoctor(doctor);
+            }
+        }
+
+        userRepository.save(user);
+    }
+
+    @Override
+    public boolean usernameExists(String username) {
+        return userRepository.findByUsername(username).isPresent();
+    }

@@ -3,132 +3,285 @@
 <head th:replace="~{_layout :: head('Статистика')}"></head>
 <body>
 <nav th:replace="~{_layout :: navbar}"></nav>
-<div class="container">
-    <h2 class="mb-4">Статистика и справки</h2>
+<div class="container pb-5">
+    <h2 class="mb-4">Справки и статистика</h2>
 
-    <div class="row g-4">
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-info text-white">Най-честа диагноза</div>
-                <div class="card-body">
-                    <ul class="list-unstyled mb-0">
-                        <li th:each="d : ${mostCommonDiagnosis}" th:text="${d.name}"></li>
-                        <li th:if="${#lists.isEmpty(mostCommonDiagnosis)}" class="text-muted">Няма данни.</li>
-                    </ul>
+    <!-- 1. Пациенти с дадена диагноза -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">1. Пациенти с дадена диагноза</div>
+        <div class="card-body">
+            <form method="get" class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">Диагноза</label>
+                    <select name="diagnosisId" class="form-select">
+                        <option value="">-- Избери --</option>
+                        <option th:each="d : ${allDiagnoses}" th:value="${d.id}" th:text="${d.name}"
+                                th:selected="${d.id == diagnosisId}"></option>
+                    </select>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-info text-white">ОПЛ и брой пациенти</div>
-                <div class="card-body">
-                    <table class="table table-sm mb-0">
-                        <thead><tr><th>Лекар</th><th>Пациенти</th></tr></thead>
-                        <tbody>
-                        <tr th:each="row : ${gpsWithPatientCount}">
-                            <td th:text="${row['doctorName']}"></td>
-                            <td th:text="${row['patientCount']}"></td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(gpsWithPatientCount)}">
-                            <td colspan="2" class="text-muted">Няма данни.</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-success text-white">Обща сума платена от пациенти</div>
-                <div class="card-body">
-                    <h4 th:text="${totalPaidByPatients != null} ? ${totalPaidByPatients} + ' лв.' : '0 лв.'"></h4>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-success text-white">Платено от пациенти по лекар</div>
-                <div class="card-body">
-                    <table class="table table-sm mb-0">
-                        <thead><tr><th>Лекар</th><th>Сума</th></tr></thead>
-                        <tbody>
-                        <tr th:each="row : ${paidByPatientsPerDoctor}">
-                            <td th:text="${row['doctorName']}"></td>
-                            <td th:text="${row['total']} + ' лв.'"></td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(paidByPatientsPerDoctor)}">
-                            <td colspan="2" class="text-muted">Няма данни.</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-warning">Брой прегледи по лекар</div>
-                <div class="card-body">
-                    <table class="table table-sm mb-0">
-                        <thead><tr><th>Лекар</th><th>Прегледи</th></tr></thead>
-                        <tbody>
-                        <tr th:each="row : ${visitsPerDoctor}">
-                            <td th:text="${row['doctorName']}"></td>
-                            <td th:text="${row['count']}"></td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(visitsPerDoctor)}">
-                            <td colspan="2" class="text-muted">Няма данни.</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-warning">Месец с най-много болнични</div>
-                <div class="card-body">
-                    <table class="table table-sm mb-0">
-                        <thead><tr><th>Месец</th><th>Година</th><th>Брой</th></tr></thead>
-                        <tbody>
-                        <tr th:each="row : ${monthWithMostSickLeaves}">
-                            <td th:text="${row['month']}"></td>
-                            <td th:text="${row['year']}"></td>
-                            <td th:text="${row['count']}"></td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(monthWithMostSickLeaves)}">
-                            <td colspan="3" class="text-muted">Няма данни.</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header bg-danger text-white">Лекари с най-много болнични</div>
-                <div class="card-body">
-                    <table class="table table-sm mb-0">
-                        <thead><tr><th>Лекар</th><th>Болнични</th></tr></thead>
-                        <tbody>
-                        <tr th:each="row : ${doctorsWithMostSickLeaves}">
-                            <td th:text="${row['doctorName']}"></td>
-                            <td th:text="${row['count']}"></td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(doctorsWithMostSickLeaves)}">
-                            <td colspan="2" class="text-muted">Няма данни.</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <input type="hidden" name="gpDoctorId" th:value="${gpDoctorId}"/>
+                <input type="hidden" name="examDoctorId" th:value="${examDoctorId}"/>
+                <input type="hidden" name="historyPatientId" th:value="${historyPatientId}"/>
+                <input type="hidden" name="from" th:value="${from}"/>
+                <input type="hidden" name="to" th:value="${to}"/>
+                <div class="col-auto"><button type="submit" class="btn btn-primary">Търси</button></div>
+            </form>
+            <div th:if="${patientsByDiagnosis != null}" class="mt-3">
+                <table class="table table-sm table-striped">
+                    <thead><tr><th>Пациент</th><th>ЕГН</th><th>Личен лекар</th></tr></thead>
+                    <tbody>
+                    <tr th:each="p : ${patientsByDiagnosis}">
+                        <td th:text="${p.name}"></td>
+                        <td th:text="${p.egn}"></td>
+                        <td th:text="${p.generalPractitionerName}"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(patientsByDiagnosis)}">
+                        <td colspan="3" class="text-muted">Няма пациенти с тази диагноза.</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+
+    <!-- 2. Най-честа диагноза -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">2. Най-честа диагноза</div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" th:each="d : ${mostCommonDiagnosis}" th:text="${d.name}"></li>
+                <li th:if="${#lists.isEmpty(mostCommonDiagnosis)}" class="list-group-item text-muted">Няма данни.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 3. Пациенти към личен лекар -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">3. Пациенти към личен лекар</div>
+        <div class="card-body">
+            <form method="get" class="row g-2 align-items-end">
+                <input type="hidden" name="diagnosisId" th:value="${diagnosisId}"/>
+                <div class="col-md-4">
+                    <label class="form-label">Личен лекар</label>
+                    <select name="gpDoctorId" class="form-select">
+                        <option value="">-- Избери --</option>
+                        <option th:each="d : ${allGPs}" th:value="${d.id}" th:text="${d.name}"
+                                th:selected="${d.id == gpDoctorId}"></option>
+                    </select>
+                </div>
+                <input type="hidden" name="examDoctorId" th:value="${examDoctorId}"/>
+                <input type="hidden" name="historyPatientId" th:value="${historyPatientId}"/>
+                <input type="hidden" name="from" th:value="${from}"/>
+                <input type="hidden" name="to" th:value="${to}"/>
+                <div class="col-auto"><button type="submit" class="btn btn-primary">Търси</button></div>
+            </form>
+            <div th:if="${patientsByGP != null}" class="mt-3">
+                <table class="table table-sm table-striped">
+                    <thead><tr><th>Пациент</th><th>ЕГН</th><th>Здравноосигурен</th></tr></thead>
+                    <tbody>
+                    <tr th:each="p : ${patientsByGP}">
+                        <td th:text="${p.name}"></td>
+                        <td th:text="${p.egn}"></td>
+                        <td th:text="${p.healthInsured} ? 'Да' : 'Не'"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(patientsByGP)}">
+                        <td colspan="3" class="text-muted">Няма пациенти.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Обща стойност платена от пациенти -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">4. Обща стойност на платените от пациентите прегледи</div>
+        <div class="card-body">
+            <h4 th:text="${totalPaidByPatients != null} ? ${totalPaidByPatients} + ' лв.' : '0.00 лв.'"></h4>
+        </div>
+    </div>
+
+    <!-- 5. Стойност по лекар -->
+    <div class="card mb-4">
+        <div class="card-header bg-success text-white">5. Стойност на платените прегледи по лекар</div>
+        <div class="card-body">
+            <table class="table table-sm table-striped">
+                <thead><tr><th>Лекар</th><th>Сума (лв.)</th></tr></thead>
+                <tbody>
+                <tr th:each="row : ${paidByPatientsPerDoctor}">
+                    <td th:text="${row['doctorName']}"></td>
+                    <td th:text="${row['totalPrice']}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(paidByPatientsPerDoctor)}">
+                    <td colspan="2" class="text-muted">Няма данни.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 6. Брой пациенти при всеки ОПЛ -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">6. Брой пациенти при всеки личен лекар</div>
+        <div class="card-body">
+            <table class="table table-sm table-striped">
+                <thead><tr><th>Личен лекар</th><th>Брой пациенти</th></tr></thead>
+                <tbody>
+                <tr th:each="row : ${gpsWithPatientCount}">
+                    <td th:text="${row['doctorName']}"></td>
+                    <td th:text="${row['patientCount']}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(gpsWithPatientCount)}">
+                    <td colspan="2" class="text-muted">Няма данни.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 7. Брой посещения при всеки лекар -->
+    <div class="card mb-4">
+        <div class="card-header bg-warning">7. Брой посещения при всеки лекар</div>
+        <div class="card-body">
+            <table class="table table-sm table-striped">
+                <thead><tr><th>Лекар</th><th>Посещения</th></tr></thead>
+                <tbody>
+                <tr th:each="row : ${visitsPerDoctor}">
+                    <td th:text="${row['doctorName']}"></td>
+                    <td th:text="${row['visitCount']}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(visitsPerDoctor)}">
+                    <td colspan="2" class="text-muted">Няма данни.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 8. История на посещенията на пациент -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">8. История на посещенията на пациент</div>
+        <div class="card-body">
+            <form method="get" class="row g-2 align-items-end">
+                <input type="hidden" name="diagnosisId" th:value="${diagnosisId}"/>
+                <input type="hidden" name="gpDoctorId" th:value="${gpDoctorId}"/>
+                <input type="hidden" name="examDoctorId" th:value="${examDoctorId}"/>
+                <div class="col-md-4">
+                    <label class="form-label">Пациент</label>
+                    <select name="historyPatientId" class="form-select">
+                        <option value="">-- Избери --</option>
+                        <option th:each="p : ${allPatients}" th:value="${p.id}" th:text="${p.name}"
+                                th:selected="${p.id == historyPatientId}"></option>
+                    </select>
+                </div>
+                <input type="hidden" name="from" th:value="${from}"/>
+                <input type="hidden" name="to" th:value="${to}"/>
+                <div class="col-auto"><button type="submit" class="btn btn-primary">Търси</button></div>
+            </form>
+            <div th:if="${patientHistory != null}" class="mt-3">
+                <table class="table table-sm table-striped">
+                    <thead><tr><th>Дата</th><th>Лекар</th><th>Лечение</th><th>Цена</th></tr></thead>
+                    <tbody>
+                    <tr th:each="e : ${patientHistory}">
+                        <td th:text="${e.date}"></td>
+                        <td th:text="${e.doctorName}"></td>
+                        <td th:text="${e.treatment}"></td>
+                        <td th:text="${e.price} + ' лв.'"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(patientHistory)}">
+                        <td colspan="4" class="text-muted">Няма прегледи.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 9. Прегледи по лекар и/или период -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">9. Прегледи по лекар и/или период</div>
+        <div class="card-body">
+            <form method="get" class="row g-2 align-items-end">
+                <input type="hidden" name="diagnosisId" th:value="${diagnosisId}"/>
+                <input type="hidden" name="gpDoctorId" th:value="${gpDoctorId}"/>
+                <input type="hidden" name="historyPatientId" th:value="${historyPatientId}"/>
+                <div class="col-md-3">
+                    <label class="form-label">Лекар (по избор)</label>
+                    <select name="examDoctorId" class="form-select">
+                        <option value="">-- Всички лекари --</option>
+                        <option th:each="d : ${allDoctors}" th:value="${d.id}" th:text="${d.name}"
+                                th:selected="${d.id == examDoctorId}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">От дата *</label>
+                    <input type="date" name="from" class="form-control" th:value="${from}"/>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">До дата *</label>
+                    <input type="date" name="to" class="form-control" th:value="${to}"/>
+                </div>
+                <div class="col-auto"><button type="submit" class="btn btn-primary">Търси</button></div>
+            </form>
+            <div th:if="${examinationsByPeriod != null}" class="mt-3">
+                <table class="table table-sm table-striped">
+                    <thead><tr><th>Дата</th><th>Лекар</th><th>Пациент</th><th>Лечение</th><th>Цена</th></tr></thead>
+                    <tbody>
+                    <tr th:each="e : ${examinationsByPeriod}">
+                        <td th:text="${e.date}"></td>
+                        <td th:text="${e.doctorName}"></td>
+                        <td th:text="${e.patientName}"></td>
+                        <td th:text="${e.treatment}"></td>
+                        <td th:text="${e.price} + ' лв.'"></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(examinationsByPeriod)}">
+                        <td colspan="5" class="text-muted">Няма прегледи за избрания период.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 10. Месец с най-много болнични -->
+    <div class="card mb-4">
+        <div class="card-header bg-warning">10. Месец с най-много издадени болнични</div>
+        <div class="card-body">
+            <table class="table table-sm table-striped">
+                <thead><tr><th>Месец</th><th>Година</th><th>Брой болнични</th></tr></thead>
+                <tbody>
+                <tr th:each="row : ${monthWithMostSickLeaves}">
+                    <td th:text="${row['month']}"></td>
+                    <td th:text="${row['year']}"></td>
+                    <td th:text="${row['count']}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(monthWithMostSickLeaves)}">
+                    <td colspan="3" class="text-muted">Няма данни.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 11. Лекар с най-много болнични -->
+    <div class="card mb-4">
+        <div class="card-header bg-danger text-white">11. Лекар(и) с най-много издадени болнични</div>
+        <div class="card-body">
+            <table class="table table-sm table-striped">
+                <thead><tr><th>Лекар</th><th>Брой болнични</th></tr></thead>
+                <tbody>
+                <tr th:each="row : ${doctorsWithMostSickLeaves}">
+                    <td th:text="${row['doctorName']}"></td>
+                    <td th:text="${row['count']}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(doctorsWithMostSickLeaves)}">
+                    <td colspan="2" class="text-muted">Няма данни.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>

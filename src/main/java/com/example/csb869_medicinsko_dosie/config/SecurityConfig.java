@@ -36,7 +36,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(authz -> authz
                 // Public resources
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                .requestMatchers("/login").permitAll()
+                .requestMatchers("/login", "/register").permitAll()
 
                 // Most specific DELETE rules first
                 .requestMatchers(HttpMethod.DELETE, "/api/**").hasRole("ADMIN")

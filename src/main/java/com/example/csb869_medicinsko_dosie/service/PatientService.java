@@ -12,4 +12,5 @@ public interface PatientService {
     void deletePatient(Long id);
     List<PatientDTO> getPatientsByGeneralPractitioner(Long doctorId);
     List<PatientDTO> getPatientsByDiagnosis(Long diagnosisId);
+    List<PatientDTO> getPatientsByDiagnosisName(String diagnosisName);
 }

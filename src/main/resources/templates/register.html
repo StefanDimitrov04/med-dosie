@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Регистрация - Медицинско досие</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Регистрация</h4>
+                </div>
+                <div class="card-body">
+                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+                    <!-- Role selector tabs -->
+                    <ul class="nav nav-tabs mb-4" id="roleTabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="patientTab" href="#" onclick="selectRole('PATIENT')">Пациент</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="doctorTab" href="#" onclick="selectRole('DOCTOR')">Лекар</a>
+                        </li>
+                    </ul>
+
+                    <form th:action="@{/register}" th:object="${registerDTO}" method="post">
+                        <input type="hidden" th:field="*{role}" id="roleInput" value="PATIENT"/>
+
+                        <div class="mb-3">
+                            <label class="form-label">Потребителско име *</label>
+                            <input type="text" class="form-control" th:field="*{username}"
+                                   th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"/>
+                            <div class="invalid-feedback" th:errors="*{username}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Парола *</label>
+                            <input type="password" class="form-control" th:field="*{password}"
+                                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"/>
+                            <div class="invalid-feedback" th:errors="*{password}"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Пълно име *</label>
+                            <input type="text" class="form-control" th:field="*{name}"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"/>
+                            <div class="invalid-feedback" th:errors="*{name}"></div>
+                        </div>
+
+                        <!-- PATIENT fields -->
+                        <div id="patientFields">
+                            <div class="mb-3">
+                                <label class="form-label">ЕГН * (10 цифри)</label>
+                                <input type="text" class="form-control" th:field="*{egn}"
+                                       th:classappend="${#fields.hasErrors('egn')} ? 'is-invalid'"
+                                       maxlength="10"/>
+                                <div class="invalid-feedback" th:errors="*{egn}"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Личен лекар</label>
+                                <select class="form-select" th:field="*{generalPractitionerId}">
+                                    <option value="">-- Изберете личен лекар --</option>
+                                    <option th:each="d : ${doctors}" th:value="${d.id}" th:text="${d.name} + ' (' + ${d.speciality} + ')'"></option>
+                                </select>
+                                <small class="text-muted">Можете да изберете личен лекар сега или по-късно.</small>
+                            </div>
+                        </div>
+
+                        <!-- DOCTOR fields -->
+                        <div id="doctorFields" style="display:none">
+                            <div class="mb-3">
+                                <label class="form-label">Идентификационен номер</label>
+                                <input type="text" class="form-control" th:field="*{identificationNumber}"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Специалност</label>
+                                <input type="text" class="form-control" th:field="*{speciality}"/>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Или свържете към съществуващ профил на лекар</label>
+                                <select class="form-select" th:field="*{existingDoctorId}">
+                                    <option value="">-- Нов профил --</option>
+                                    <option th:each="d : ${allDoctors}" th:value="${d.id}" th:text="${d.name}"></option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mt-2">Регистрирай се</button>
+                    </form>
+                </div>
+                <div class="card-footer text-center">
+                    Вече имате акаунт? <a th:href="@{/login}">Влезте тук</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script>
+function selectRole(role) {
+    document.getElementById('roleInput').value = role;
+    document.getElementById('patientFields').style.display = (role === 'PATIENT') ? 'block' : 'none';
+    document.getElementById('doctorFields').style.display = (role === 'DOCTOR') ? 'block' : 'none';
+    document.getElementById('patientTab').classList.toggle('active', role === 'PATIENT');
+    document.getElementById('doctorTab').classList.toggle('active', role === 'DOCTOR');
+}
+// Restore tab on validation error
+(function() {
+    const role = document.getElementById('roleInput').value;
+    if (role === 'DOCTOR') selectRole('DOCTOR');
+})();
+</script>
+</body>
+</html>
