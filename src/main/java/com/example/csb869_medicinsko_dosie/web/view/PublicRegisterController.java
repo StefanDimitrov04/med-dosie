@@ -3,8 +3,12 @@ package com.example.csb869_medicinsko_dosie.web.view;
 import com.example.csb869_medicinsko_dosie.dto.PublicRegisterDTO;
 import com.example.csb869_medicinsko_dosie.service.DoctorService;
 import com.example.csb869_medicinsko_dosie.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,15 +27,16 @@ public class PublicRegisterController {
     @GetMapping
     public String showForm(Model model) {
         model.addAttribute("registerDTO", new PublicRegisterDTO());
-        model.addAttribute("doctors", doctorService.getGeneralPractitioners());
+        model.addAttribute("doctors", doctorService.getAllDoctors());
         model.addAttribute("allDoctors", doctorService.getAllDoctors());
         return "register";
     }
 
     @PostMapping
-    public String register(@Valid PublicRegisterDTO registerDTO, BindingResult br, Model model) {
+    public String register(@Valid PublicRegisterDTO registerDTO, BindingResult br, Model model,
+                           HttpServletRequest request) {
         if (br.hasErrors()) {
-            model.addAttribute("doctors", doctorService.getGeneralPractitioners());
+            model.addAttribute("doctors", doctorService.getAllDoctors());
             model.addAttribute("allDoctors", doctorService.getAllDoctors());
             return "register";
         }
@@ -39,10 +44,17 @@ public class PublicRegisterController {
             userService.registerPublic(registerDTO);
         } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
-            model.addAttribute("doctors", doctorService.getGeneralPractitioners());
+            model.addAttribute("doctors", doctorService.getAllDoctors());
             model.addAttribute("allDoctors", doctorService.getAllDoctors());
             return "register";
         }
-        return "redirect:/login?registered";
+
+        // Auto-login after successful registration
+        UserDetails userDetails = userService.loadUserByUsername(registerDTO.getUsername());
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        return "redirect:/";
     }
 }

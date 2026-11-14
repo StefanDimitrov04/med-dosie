@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -40,6 +41,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void register(RegisterDTO dto) {
+        if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("Потребителското име вече съществува");
+        }
         User user = new User();
         user.setUsername(dto.getUsername());
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
@@ -66,6 +70,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void registerPublic(PublicRegisterDTO dto) {
         if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
             throw new IllegalArgumentException("Потребителското име вече съществува");
