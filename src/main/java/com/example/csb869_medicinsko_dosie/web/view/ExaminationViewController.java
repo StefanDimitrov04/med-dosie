@@ -65,9 +65,18 @@ public class ExaminationViewController {
 
     @Secured({"ROLE_DOCTOR", "ROLE_ADMIN"})
     @GetMapping("/new")
-    public String newForm(Model model) {
-        model.addAttribute("examination", new ExaminationDTO());
-        model.addAttribute("doctors", doctorService.getAllDoctors());
+    public String newForm(Model model, Authentication auth) {
+        ExaminationDTO dto = new ExaminationDTO();
+        boolean isDoctor = isDoctor(auth);
+        if (isDoctor) {
+            Long doctorId = getDoctorId(auth);
+            dto.setDoctorId(doctorId);
+            model.addAttribute("currentDoctor", doctorId != null ? doctorService.getDoctorById(doctorId) : null);
+        } else {
+            model.addAttribute("doctors", doctorService.getAllDoctors());
+        }
+        model.addAttribute("examination", dto);
+        model.addAttribute("isDoctor", isDoctor);
         model.addAttribute("patients", patientService.getAllPatients());
         model.addAttribute("diagnoses", diagnosisService.getAllDiagnoses());
         return "examinations/form";
@@ -75,9 +84,20 @@ public class ExaminationViewController {
 
     @Secured({"ROLE_DOCTOR", "ROLE_ADMIN"})
     @PostMapping("/new")
-    public String create(@Valid @ModelAttribute("examination") ExaminationDTO dto, BindingResult br, Model model) {
+    public String create(@Valid @ModelAttribute("examination") ExaminationDTO dto, BindingResult br,
+                         Model model, Authentication auth) {
+        boolean isDoctor = isDoctor(auth);
+        if (isDoctor) {
+            dto.setDoctorId(getDoctorId(auth));
+        }
         if (br.hasErrors()) {
-            model.addAttribute("doctors", doctorService.getAllDoctors());
+            if (isDoctor) {
+                Long doctorId = getDoctorId(auth);
+                model.addAttribute("currentDoctor", doctorId != null ? doctorService.getDoctorById(doctorId) : null);
+            } else {
+                model.addAttribute("doctors", doctorService.getAllDoctors());
+            }
+            model.addAttribute("isDoctor", isDoctor);
             model.addAttribute("patients", patientService.getAllPatients());
             model.addAttribute("diagnoses", diagnosisService.getAllDiagnoses());
             return "examinations/form";
@@ -88,9 +108,16 @@ public class ExaminationViewController {
 
     @Secured({"ROLE_DOCTOR", "ROLE_ADMIN"})
     @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editForm(@PathVariable Long id, Model model, Authentication auth) {
+        boolean isDoctor = isDoctor(auth);
+        if (isDoctor) {
+            Long doctorId = getDoctorId(auth);
+            model.addAttribute("currentDoctor", doctorId != null ? doctorService.getDoctorById(doctorId) : null);
+        } else {
+            model.addAttribute("doctors", doctorService.getAllDoctors());
+        }
         model.addAttribute("examination", examinationService.getExaminationById(id));
-        model.addAttribute("doctors", doctorService.getAllDoctors());
+        model.addAttribute("isDoctor", isDoctor);
         model.addAttribute("patients", patientService.getAllPatients());
         model.addAttribute("diagnoses", diagnosisService.getAllDiagnoses());
         return "examinations/form";
@@ -98,9 +125,20 @@ public class ExaminationViewController {
 
     @Secured({"ROLE_DOCTOR", "ROLE_ADMIN"})
     @PostMapping("/{id}/edit")
-    public String update(@PathVariable Long id, @Valid @ModelAttribute("examination") ExaminationDTO dto, BindingResult br, Model model) {
+    public String update(@PathVariable Long id, @Valid @ModelAttribute("examination") ExaminationDTO dto,
+                         BindingResult br, Model model, Authentication auth) {
+        boolean isDoctor = isDoctor(auth);
+        if (isDoctor) {
+            dto.setDoctorId(getDoctorId(auth));
+        }
         if (br.hasErrors()) {
-            model.addAttribute("doctors", doctorService.getAllDoctors());
+            if (isDoctor) {
+                Long doctorId = getDoctorId(auth);
+                model.addAttribute("currentDoctor", doctorId != null ? doctorService.getDoctorById(doctorId) : null);
+            } else {
+                model.addAttribute("doctors", doctorService.getAllDoctors());
+            }
+            model.addAttribute("isDoctor", isDoctor);
             model.addAttribute("patients", patientService.getAllPatients());
             model.addAttribute("diagnoses", diagnosisService.getAllDiagnoses());
             return "examinations/form";
@@ -114,5 +152,16 @@ public class ExaminationViewController {
     public String delete(@PathVariable Long id) {
         examinationService.deleteExamination(id);
         return "redirect:/examinations";
+    }
+
+    private boolean isDoctor(Authentication auth) {
+        return auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_DOCTOR"));
+    }
+
+    private Long getDoctorId(Authentication auth) {
+        return userRepository.findByUsername(auth.getName())
+                .map(u -> u.getDoctor() != null ? u.getDoctor().getId() : null)
+                .orElse(null);
     }
 }
