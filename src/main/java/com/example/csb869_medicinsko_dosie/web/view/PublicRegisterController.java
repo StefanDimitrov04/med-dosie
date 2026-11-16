@@ -33,8 +33,8 @@ public class PublicRegisterController {
     }
 
     @PostMapping
-    public String register(@Valid PublicRegisterDTO registerDTO, BindingResult br, Model model,
-                           HttpServletRequest request) {
+    public String register(@Valid @ModelAttribute("registerDTO") PublicRegisterDTO registerDTO,
+                           BindingResult br, Model model, HttpServletRequest request) {
         if (br.hasErrors()) {
             model.addAttribute("doctors", doctorService.getAllDoctors());
             model.addAttribute("allDoctors", doctorService.getAllDoctors());

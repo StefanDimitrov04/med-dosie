@@ -12,29 +12,26 @@ import lombok.*;
 @Builder
 public class PublicRegisterDTO {
 
-    @NotBlank(message = "Потребителското име е задължително")
-    @Size(min = 3, max = 50, message = "Минимум 3 символа")
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Minimum 3 characters")
     private String username;
 
-    @NotBlank(message = "Паролата е задължителна")
-    @Size(min = 4, message = "Минимум 4 символа")
+    @NotBlank(message = "Password is required")
+    @Size(min = 4, message = "Minimum 4 characters")
     private String password;
 
-    // "PATIENT" or "DOCTOR"
     private String role;
 
-    // For PATIENT
-    @NotBlank(message = "Името е задължително")
+    @NotBlank(message = "Full name is required")
     @Size(min = 2, max = 100)
     private String name;
 
-    @Pattern(regexp = "\\d{10}", message = "ЕГН-то трябва да е точно 10 цифри")
+    @Pattern(regexp = "\\d{10}", message = "Personal ID must be exactly 10 digits")
     private String egn;
 
     private Long generalPractitionerId;
 
-    // For DOCTOR
     private String identificationNumber;
     private String speciality;
-    private Long existingDoctorId; // link to existing doctor profile
+    private Long existingDoctorId;
 }

@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void register(RegisterDTO dto) {
         if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("Потребителското име вече съществува");
+            throw new IllegalArgumentException("Username already exists");
         }
         User user = new User();
         user.setUsername(dto.getUsername());
@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void registerPublic(PublicRegisterDTO dto) {
         if (userRepository.findByUsername(dto.getUsername()).isPresent()) {
-            throw new IllegalArgumentException("Потребителското име вече съществува");
+            throw new IllegalArgumentException("Username already exists");
         }
 
         String roleName = ("DOCTOR".equalsIgnoreCase(dto.getRole())) ? "DOCTOR" : "PATIENT";
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
             patient.setHealthInsured(false);
             if (dto.getGeneralPractitionerId() != null) {
                 Doctor gp = doctorRepository.findById(dto.getGeneralPractitionerId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Лекарят не е намерен"));
+                        .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
                 patient.setGeneralPractitioner(gp);
             }
             patient = patientRepository.save(patient);
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
             // DOCTOR — link to existing doctor profile or create new
             if (dto.getExistingDoctorId() != null) {
                 Doctor doctor = doctorRepository.findById(dto.getExistingDoctorId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Лекарят не е намерен"));
+                        .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
                 user.setDoctor(doctor);
             } else {
                 Doctor doctor = new Doctor();

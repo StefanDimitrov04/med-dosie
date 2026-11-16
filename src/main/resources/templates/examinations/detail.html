@@ -1,37 +1,37 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{_layout :: head('Преглед')}"></head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{_layout :: head('Examination Details')}"></head>
 <body>
 <nav th:replace="~{_layout :: navbar}"></nav>
 <div class="container">
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h4>Преглед #<span th:text="${examination.id}"></span></h4>
+            <h4>Examination #<span th:text="${examination.id}"></span></h4>
         </div>
         <div class="card-body">
             <dl class="row">
-                <dt class="col-sm-4">Дата</dt>
+                <dt class="col-sm-4">Date</dt>
                 <dd class="col-sm-8" th:text="${examination.date}"></dd>
-                <dt class="col-sm-4">Лекар</dt>
+                <dt class="col-sm-4">Doctor</dt>
                 <dd class="col-sm-8" th:text="${examination.doctorName}"></dd>
-                <dt class="col-sm-4">Пациент</dt>
+                <dt class="col-sm-4">Patient</dt>
                 <dd class="col-sm-8" th:text="${examination.patientName}"></dd>
-                <dt class="col-sm-4">Диагнози</dt>
+                <dt class="col-sm-4">Diagnoses</dt>
                 <dd class="col-sm-8">
                     <span th:each="d, stat : ${examination.diagnoses}"
                           class="badge bg-secondary me-1"
                           th:text="${d.name}"></span>
                 </dd>
-                <dt class="col-sm-4">Лечение</dt>
+                <dt class="col-sm-4">Treatment</dt>
                 <dd class="col-sm-8" th:text="${examination.treatment}"></dd>
-                <dt class="col-sm-4">Цена</dt>
-                <dd class="col-sm-8" th:text="${examination.price} + ' лв.'"></dd>
+                <dt class="col-sm-4">Price</dt>
+                <dd class="col-sm-8" th:text="${examination.price} + ' BGN'"></dd>
             </dl>
         </div>
         <div class="card-footer">
-            <a th:href="@{/examinations}" class="btn btn-secondary">Назад</a>
+            <a th:href="@{/examinations}" class="btn btn-secondary">Back</a>
             <a sec:authorize="hasAnyRole('DOCTOR','ADMIN')"
-               th:href="@{/examinations/{id}/edit(id=${examination.id})}" class="btn btn-warning">Редакция</a>
+               th:href="@{/examinations/{id}/edit(id=${examination.id})}" class="btn btn-warning">Edit</a>
         </div>
     </div>
 </div>

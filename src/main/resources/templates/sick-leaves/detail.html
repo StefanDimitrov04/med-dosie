@@ -1,29 +1,29 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{_layout :: head('Болничен лист')}"></head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{_layout :: head('Sick Leave Details')}"></head>
 <body>
 <nav th:replace="~{_layout :: navbar}"></nav>
 <div class="container">
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h4>Болничен лист #<span th:text="${sickLeave.id}"></span></h4>
+            <h4>Sick Leave #<span th:text="${sickLeave.id}"></span></h4>
         </div>
         <div class="card-body">
             <dl class="row">
-                <dt class="col-sm-4">От дата</dt>
+                <dt class="col-sm-4">Start Date</dt>
                 <dd class="col-sm-8" th:text="${sickLeave.startDate}"></dd>
-                <dt class="col-sm-4">Продължителност (дни)</dt>
+                <dt class="col-sm-4">Duration (days)</dt>
                 <dd class="col-sm-8" th:text="${sickLeave.durationDays}"></dd>
-                <dt class="col-sm-4">Пациент</dt>
+                <dt class="col-sm-4">Patient</dt>
                 <dd class="col-sm-8" th:text="${sickLeave.patientName}"></dd>
-                <dt class="col-sm-4">Лекар</dt>
+                <dt class="col-sm-4">Doctor</dt>
                 <dd class="col-sm-8" th:text="${sickLeave.doctorName}"></dd>
             </dl>
         </div>
         <div class="card-footer">
-            <a th:href="@{/sick-leaves}" class="btn btn-secondary">Назад</a>
+            <a th:href="@{/sick-leaves}" class="btn btn-secondary">Back</a>
             <a sec:authorize="hasAnyRole('DOCTOR','ADMIN')"
-               th:href="@{/sick-leaves/{id}/edit(id=${sickLeave.id})}" class="btn btn-warning">Редакция</a>
+               th:href="@{/sick-leaves/{id}/edit(id=${sickLeave.id})}" class="btn btn-warning">Edit</a>
         </div>
     </div>
 </div>

@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{_layout :: head('Прегледи')}"></head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{_layout :: head('Examinations')}"></head>
 <body>
 <nav th:replace="~{_layout :: navbar}"></nav>
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Прегледи</h2>
-        <a sec:authorize="hasAnyRole('DOCTOR','ADMIN')" th:href="@{/examinations/new}" class="btn btn-success">+ Нов преглед</a>
+        <h2>Examinations</h2>
+        <a sec:authorize="hasAnyRole('DOCTOR','ADMIN')" th:href="@{/examinations/new}" class="btn btn-success">+ New Examination</a>
     </div>
     <table class="table table-striped table-hover">
         <thead class="table-primary">
         <tr>
             <th>#</th>
-            <th>Дата</th>
-            <th>Лекар</th>
-            <th>Пациент</th>
-            <th>Лечение</th>
-            <th>Цена</th>
-            <th>Действия</th>
+            <th>Date</th>
+            <th>Doctor</th>
+            <th>Patient</th>
+            <th>Treatment</th>
+            <th>Price</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -29,18 +29,18 @@
             <td th:text="${e.treatment}"></td>
             <td th:text="${e.price}"></td>
             <td>
-                <a th:href="@{/examinations/{id}(id=${e.id})}" class="btn btn-sm btn-info">Детайли</a>
+                <a th:href="@{/examinations/{id}(id=${e.id})}" class="btn btn-sm btn-info">Details</a>
                 <a sec:authorize="hasAnyRole('DOCTOR','ADMIN')"
-                   th:href="@{/examinations/{id}/edit(id=${e.id})}" class="btn btn-sm btn-warning">Редакция</a>
+                   th:href="@{/examinations/{id}/edit(id=${e.id})}" class="btn btn-sm btn-warning">Edit</a>
                 <form sec:authorize="hasRole('ADMIN')"
                       th:action="@{/examinations/{id}/delete(id=${e.id})}" method="post" class="d-inline"
-                      onsubmit="return confirm('Изтриване на преглед?')">
-                    <button class="btn btn-sm btn-danger" type="submit">Изтрий</button>
+                      onsubmit="return confirm('Delete this examination?')">
+                    <button class="btn btn-sm btn-danger" type="submit">Delete</button>
                 </form>
             </td>
         </tr>
         <tr th:if="${#lists.isEmpty(examinations)}">
-            <td colspan="7" class="text-center text-muted">Няма прегледи.</td>
+            <td colspan="7" class="text-center text-muted">No examinations found.</td>
         </tr>
         </tbody>
     </table>

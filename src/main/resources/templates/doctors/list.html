@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{_layout :: head('Лекари')}"></head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{_layout :: head('Doctors')}"></head>
 <body>
 <nav th:replace="~{_layout :: navbar}"></nav>
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Лекари</h2>
-        <a sec:authorize="hasRole('ADMIN')" th:href="@{/doctors/new}" class="btn btn-success">+ Добави лекар</a>
+        <h2>Doctors</h2>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/doctors/new}" class="btn btn-success">+ Add Doctor</a>
     </div>
     <table class="table table-striped table-hover">
         <thead class="table-primary">
         <tr>
             <th>#</th>
-            <th>Идент. номер</th>
-            <th>Име</th>
-            <th>Специалност</th>
-            <th>ОПЛ</th>
-            <th sec:authorize="hasRole('ADMIN')">Действия</th>
+            <th>ID Number</th>
+            <th>Name</th>
+            <th>Speciality</th>
+            <th>GP</th>
+            <th sec:authorize="hasRole('ADMIN')">Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -25,17 +25,17 @@
             <td th:text="${d.identificationNumber}"></td>
             <td><a th:href="@{/doctors/{id}(id=${d.id})}" th:text="${d.name}"></a></td>
             <td th:text="${d.speciality}"></td>
-            <td th:text="${d.generalPractitioner} ? 'Да' : 'Не'"></td>
+            <td th:text="${d.generalPractitioner} ? 'Yes' : 'No'"></td>
             <td sec:authorize="hasRole('ADMIN')">
-                <a th:href="@{/doctors/{id}/edit(id=${d.id})}" class="btn btn-sm btn-warning">Редакция</a>
+                <a th:href="@{/doctors/{id}/edit(id=${d.id})}" class="btn btn-sm btn-warning">Edit</a>
                 <form th:action="@{/doctors/{id}/delete(id=${d.id})}" method="post" class="d-inline"
-                      onsubmit="return confirm('Изтриване на лекар?')">
-                    <button class="btn btn-sm btn-danger" type="submit">Изтрий</button>
+                      onsubmit="return confirm('Delete this doctor?')">
+                    <button class="btn btn-sm btn-danger" type="submit">Delete</button>
                 </form>
             </td>
         </tr>
         <tr th:if="${#lists.isEmpty(doctors)}">
-            <td colspan="6" class="text-center text-muted">Няма лекари.</td>
+            <td colspan="6" class="text-center text-muted">No doctors found.</td>
         </tr>
         </tbody>
     </table>

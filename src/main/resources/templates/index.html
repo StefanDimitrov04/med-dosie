@@ -1,74 +1,74 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="~{_layout :: head('Начало')}"></head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{_layout :: head('Home')}"></head>
 <body>
 <nav th:replace="~{_layout :: navbar}"></nav>
 <div class="container">
-    <h1 class="mb-4">Медицинско досие на пациента</h1>
+    <h1 class="mb-4">Patient Medical Records</h1>
 
-    <div th:if="${param.registered}" class="alert alert-success">Потребителят е регистриран успешно.</div>
+    <div th:if="${param.registered}" class="alert alert-success">User registered successfully.</div>
 
     <div class="row g-3">
         <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN','DOCTOR')">
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Лекари</h5>
-                    <p class="card-text">Управление на лекарите в системата.</p>
-                    <a th:href="@{/doctors}" class="btn btn-primary">Преглед</a>
+                    <h5 class="card-title">Doctors</h5>
+                    <p class="card-text">Manage doctors in the system.</p>
+                    <a th:href="@{/doctors}" class="btn btn-primary">View</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN','DOCTOR')">
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Пациенти</h5>
-                    <p class="card-text">Управление на пациентите.</p>
-                    <a th:href="@{/patients}" class="btn btn-primary">Преглед</a>
+                    <h5 class="card-title">Patients</h5>
+                    <p class="card-text">Manage patients.</p>
+                    <a th:href="@{/patients}" class="btn btn-primary">View</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Прегледи</h5>
-                    <p class="card-text">История на прегледите.</p>
-                    <a th:href="@{/examinations}" class="btn btn-primary">Преглед</a>
+                    <h5 class="card-title">Examinations</h5>
+                    <p class="card-text">Examination history.</p>
+                    <a th:href="@{/examinations}" class="btn btn-primary">View</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Диагнози</h5>
-                    <p class="card-text">Управление на диагнозите.</p>
-                    <a th:href="@{/diagnoses}" class="btn btn-primary">Преглед</a>
+                    <h5 class="card-title">Diagnoses</h5>
+                    <p class="card-text">Manage diagnoses.</p>
+                    <a th:href="@{/diagnoses}" class="btn btn-primary">View</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4">
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Болнични листове</h5>
-                    <p class="card-text">Управление на болничните листове.</p>
-                    <a th:href="@{/sick-leaves}" class="btn btn-primary">Преглед</a>
+                    <h5 class="card-title">Sick Leaves</h5>
+                    <p class="card-text">Manage sick leave certificates.</p>
+                    <a th:href="@{/sick-leaves}" class="btn btn-primary">View</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4" sec:authorize="hasAnyRole('ADMIN','DOCTOR')">
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Справки и статистика</h5>
-                    <p class="card-text">Статистически справки.</p>
-                    <a th:href="@{/statistics}" class="btn btn-info">Статистика</a>
+                    <h5 class="card-title">Statistics</h5>
+                    <p class="card-text">Statistical reports.</p>
+                    <a th:href="@{/statistics}" class="btn btn-info">Statistics</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
             <div class="card h-100">
                 <div class="card-body">
-                    <h5 class="card-title">Потребители</h5>
-                    <p class="card-text">Регистрация на нови потребители.</p>
-                    <a th:href="@{/users/register}" class="btn btn-secondary">Нов потребител</a>
+                    <h5 class="card-title">Users</h5>
+                    <p class="card-text">Register new users.</p>
+                    <a th:href="@{/users/register}" class="btn btn-secondary">New User</a>
                 </div>
             </div>
         </div>

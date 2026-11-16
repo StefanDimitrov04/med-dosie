@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{_layout :: head('Нов потребител')}"></head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{_layout :: head('New User')}"></head>
 <body>
 <nav th:replace="~{_layout :: navbar}"></nav>
 <div class="container">
@@ -8,24 +8,24 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h5>Регистрация на нов потребител</h5>
+                    <h5>Register New User</h5>
                 </div>
                 <div class="card-body">
                     <form th:action="@{/users/register}" th:object="${registerDTO}" method="post">
                         <div class="mb-3">
-                            <label class="form-label">Потребителско име *</label>
+                            <label class="form-label">Username *</label>
                             <input type="text" class="form-control" th:field="*{username}"
                                    th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"/>
                             <div class="invalid-feedback" th:errors="*{username}"></div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Парола *</label>
+                            <label class="form-label">Password *</label>
                             <input type="password" class="form-control" th:field="*{password}"
                                    th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"/>
                             <div class="invalid-feedback" th:errors="*{password}"></div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Роля</label>
+                            <label class="form-label">Role</label>
                             <select class="form-select" th:field="*{role}">
                                 <option value="ADMIN">ADMIN</option>
                                 <option value="DOCTOR">DOCTOR</option>
@@ -33,21 +33,21 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Свързан лекар (за DOCTOR роля)</label>
+                            <label class="form-label">Linked Doctor (for DOCTOR role)</label>
                             <select class="form-select" th:field="*{doctorId}">
-                                <option value="">-- Не е избран --</option>
+                                <option value="">-- None --</option>
                                 <option th:each="d : ${doctors}" th:value="${d.id}" th:text="${d.name}"></option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Свързан пациент (за PATIENT роля)</label>
+                            <label class="form-label">Linked Patient (for PATIENT role)</label>
                             <select class="form-select" th:field="*{patientId}">
-                                <option value="">-- Не е избран --</option>
+                                <option value="">-- None --</option>
                                 <option th:each="p : ${patients}" th:value="${p.id}" th:text="${p.name}"></option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Регистрирай</button>
-                        <a th:href="@{/}" class="btn btn-secondary ms-2">Отказ</a>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                        <a th:href="@{/}" class="btn btn-secondary ms-2">Cancel</a>
                     </form>
                 </div>
             </div>

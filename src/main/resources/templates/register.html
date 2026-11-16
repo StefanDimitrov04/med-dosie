@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="bg" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Регистрация - Медицинско досие</title>
+    <title>Register - Medical Records</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
 </head>
 <body class="bg-light">
@@ -12,18 +12,17 @@
         <div class="col-md-7">
             <div class="card shadow">
                 <div class="card-header bg-primary text-white text-center">
-                    <h4>Регистрация</h4>
+                    <h4>Create Account</h4>
                 </div>
                 <div class="card-body">
                     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-                    <!-- Role selector tabs -->
                     <ul class="nav nav-tabs mb-4" id="roleTabs">
                         <li class="nav-item">
-                            <a class="nav-link active" id="patientTab" href="#" onclick="selectRole('PATIENT')">Пациент</a>
+                            <a class="nav-link active" id="patientTab" href="#" onclick="selectRole('PATIENT')">Patient</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="doctorTab" href="#" onclick="selectRole('DOCTOR')">Лекар</a>
+                            <a class="nav-link" id="doctorTab" href="#" onclick="selectRole('DOCTOR')">Doctor</a>
                         </li>
                     </ul>
 
@@ -31,21 +30,21 @@
                         <input type="hidden" th:field="*{role}" id="roleInput" value="PATIENT"/>
 
                         <div class="mb-3">
-                            <label class="form-label">Потребителско име *</label>
+                            <label class="form-label">Username *</label>
                             <input type="text" class="form-control" th:field="*{username}"
                                    th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"/>
                             <div class="invalid-feedback" th:errors="*{username}"></div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Парола *</label>
+                            <label class="form-label">Password *</label>
                             <input type="password" class="form-control" th:field="*{password}"
                                    th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"/>
                             <div class="invalid-feedback" th:errors="*{password}"></div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Пълно име *</label>
+                            <label class="form-label">Full Name *</label>
                             <input type="text" class="form-control" th:field="*{name}"
                                    th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"/>
                             <div class="invalid-feedback" th:errors="*{name}"></div>
@@ -54,46 +53,47 @@
                         <!-- PATIENT fields -->
                         <div id="patientFields">
                             <div class="mb-3">
-                                <label class="form-label">ЕГН * (10 цифри)</label>
+                                <label class="form-label">Personal ID (EGN) * — 10 digits</label>
                                 <input type="text" class="form-control" th:field="*{egn}"
                                        th:classappend="${#fields.hasErrors('egn')} ? 'is-invalid'"
                                        maxlength="10"/>
                                 <div class="invalid-feedback" th:errors="*{egn}"></div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Личен лекар</label>
+                                <label class="form-label">General Practitioner</label>
                                 <select class="form-select" th:field="*{generalPractitionerId}">
-                                    <option value="">-- Изберете личен лекар --</option>
-                                    <option th:each="d : ${doctors}" th:value="${d.id}" th:text="${d.name} + ' (' + ${d.speciality} + ')'"></option>
+                                    <option value="">-- Select GP --</option>
+                                    <option th:each="d : ${doctors}" th:value="${d.id}"
+                                            th:text="${d.name} + ' (' + ${d.speciality} + ')'"></option>
                                 </select>
-                                <small class="text-muted">Можете да изберете личен лекар сега или по-късно.</small>
+                                <small class="text-muted">You can assign a GP now or later.</small>
                             </div>
                         </div>
 
                         <!-- DOCTOR fields -->
                         <div id="doctorFields" style="display:none">
                             <div class="mb-3">
-                                <label class="form-label">Идентификационен номер</label>
+                                <label class="form-label">Identification Number</label>
                                 <input type="text" class="form-control" th:field="*{identificationNumber}"/>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Специалност</label>
+                                <label class="form-label">Speciality</label>
                                 <input type="text" class="form-control" th:field="*{speciality}"/>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Или свържете към съществуващ профил на лекар</label>
+                                <label class="form-label">Or link to an existing doctor profile</label>
                                 <select class="form-select" th:field="*{existingDoctorId}">
-                                    <option value="">-- Нов профил --</option>
+                                    <option value="">-- New profile --</option>
                                     <option th:each="d : ${allDoctors}" th:value="${d.id}" th:text="${d.name}"></option>
                                 </select>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100 mt-2">Регистрирай се</button>
+                        <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
                     </form>
                 </div>
                 <div class="card-footer text-center">
-                    Вече имате акаунт? <a th:href="@{/login}">Влезте тук</a>
+                    Already have an account? <a th:href="@{/login}">Sign in here</a>
                 </div>
             </div>
         </div>
@@ -108,7 +108,6 @@ function selectRole(role) {
     document.getElementById('patientTab').classList.toggle('active', role === 'PATIENT');
     document.getElementById('doctorTab').classList.toggle('active', role === 'DOCTOR');
 }
-// Restore tab on validation error
 (function() {
     const role = document.getElementById('roleInput').value;
     if (role === 'DOCTOR') selectRole('DOCTOR');
