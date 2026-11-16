@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
         if ("PATIENT".equals(roleName)) {
             Patient patient = new Patient();
             patient.setName(dto.getName());
-            patient.setEgn(dto.getEgn());
+            patient.setEgn(dto.getEgn() != null && !dto.getEgn().isBlank() ? dto.getEgn() : null);
             patient.setHealthInsured(false);
             if (dto.getGeneralPractitionerId() != null) {
                 Doctor gp = doctorRepository.findById(dto.getGeneralPractitionerId())

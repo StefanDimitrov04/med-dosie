@@ -26,7 +26,7 @@ public class PublicRegisterDTO {
     @Size(min = 2, max = 100)
     private String name;
 
-    @Pattern(regexp = "\\d{10}", message = "Personal ID must be exactly 10 digits")
+    @Pattern(regexp = "^(\\d{10})?$", message = "Personal ID must be exactly 10 digits")
     private String egn;
 
     private Long generalPractitionerId;

@@ -36,6 +36,12 @@ public class PublicRegisterController {
     @PostMapping
     public String register(@Valid @ModelAttribute("registerDTO") PublicRegisterDTO registerDTO,
                            BindingResult br, Model model, HttpServletRequest request) {
+        // EGN is required only for PATIENT
+        if ("PATIENT".equalsIgnoreCase(registerDTO.getRole())
+                && (registerDTO.getEgn() == null || registerDTO.getEgn().isBlank())) {
+            br.rejectValue("egn", "egn.required", "Personal ID is required for patients");
+        }
+
         if (br.hasErrors()) {
             model.addAttribute("doctors", doctorService.getAllDoctors());
             model.addAttribute("allDoctors", doctorService.getAllDoctors());
