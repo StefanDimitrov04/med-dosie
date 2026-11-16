@@ -97,7 +97,7 @@
     <div class="card mb-4">
         <div class="card-header bg-success text-white">4. Total Amount Paid by Patients</div>
         <div class="card-body">
-            <h4 th:text="${totalPaidByPatients != null} ? ${totalPaidByPatients} + ' BGN' : '0.00 BGN'"></h4>
+            <h4 th:text="${totalPaidByPatients != null} ? ${totalPaidByPatients} + ' EUR' : '0.00 EUR'"></h4>
         </div>
     </div>
 
@@ -106,7 +106,7 @@
         <div class="card-header bg-success text-white">5. Amount Paid by Patients per Doctor</div>
         <div class="card-body">
             <table class="table table-sm table-striped">
-                <thead><tr><th>Doctor</th><th>Total (BGN)</th></tr></thead>
+                <thead><tr><th>Doctor</th><th>Total (EUR)</th></tr></thead>
                 <tbody>
                 <tr th:each="row : ${paidByPatientsPerDoctor}">
                     <td th:text="${row['doctorName']}"></td>
@@ -186,7 +186,7 @@
                         <td th:text="${e.date}"></td>
                         <td th:text="${e.doctorName}"></td>
                         <td th:text="${e.treatment}"></td>
-                        <td th:text="${e.price} + ' BGN'"></td>
+                        <td th:text="${e.price} + ' EUR'"></td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(patientHistory)}">
                         <td colspan="4" class="text-muted">No examinations found.</td>
@@ -232,7 +232,7 @@
                         <td th:text="${e.doctorName}"></td>
                         <td th:text="${e.patientName}"></td>
                         <td th:text="${e.treatment}"></td>
-                        <td th:text="${e.price} + ' BGN'"></td>
+                        <td th:text="${e.price} + ' EUR'"></td>
                     </tr>
                     <tr th:if="${#lists.isEmpty(examinationsByPeriod)}">
                         <td colspan="5" class="text-muted">No examinations for the selected period.</td>
