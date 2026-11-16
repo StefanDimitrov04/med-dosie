@@ -121,3 +121,4 @@ public class UserServiceImpl implements UserService {
     public boolean usernameExists(String username) {
         return userRepository.findByUsername(username).isPresent();
     }
+}
