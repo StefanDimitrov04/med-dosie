@@ -4,11 +4,14 @@ import com.example.csb869_medicinsko_dosie.dto.PublicRegisterDTO;
 import com.example.csb869_medicinsko_dosie.service.DoctorService;
 import com.example.csb869_medicinsko_dosie.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -35,7 +38,8 @@ public class PublicRegisterController {
 
     @PostMapping
     public String register(@Valid @ModelAttribute("registerDTO") PublicRegisterDTO registerDTO,
-                           BindingResult br, Model model, HttpServletRequest request) {
+                           BindingResult br, Model model, HttpServletRequest request,
+                           jakarta.servlet.http.HttpServletResponse response) {
         // EGN is required only for PATIENT
         if ("PATIENT".equalsIgnoreCase(registerDTO.getRole())
                 && (registerDTO.getEgn() == null || registerDTO.getEgn().isBlank())) {
@@ -56,11 +60,15 @@ public class PublicRegisterController {
             return "register";
         }
 
-        // Auto-login after successful registration
+        // Auto-login: set auth and persist to HTTP session so it survives the redirect
         UserDetails userDetails = userService.loadUserByUsername(registerDTO.getUsername());
         UsernamePasswordAuthenticationToken auth =
                 new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(auth);
+        SecurityContextHolder.setContext(context);
+        HttpSession session = request.getSession(true);
+        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
 
         return "redirect:/";
     }

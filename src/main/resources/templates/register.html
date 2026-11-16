@@ -80,13 +80,6 @@
                                 <label class="form-label">Speciality</label>
                                 <input type="text" class="form-control" th:field="*{speciality}"/>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Or link to an existing doctor profile</label>
-                                <select class="form-select" th:field="*{existingDoctorId}">
-                                    <option value="">-- New profile --</option>
-                                    <option th:each="d : ${allDoctors}" th:value="${d.id}" th:text="${d.name}"></option>
-                                </select>
-                            </div>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100 mt-2">Register</button>
