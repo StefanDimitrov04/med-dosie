@@ -1,6 +1,7 @@
 package com.example.csb869_medicinsko_dosie.web.view;
 
 import com.example.csb869_medicinsko_dosie.data.repo.UserRepository;
+import com.example.csb869_medicinsko_dosie.dto.ExaminationDTO;
 import com.example.csb869_medicinsko_dosie.dto.SickLeaveDTO;
 import com.example.csb869_medicinsko_dosie.service.ExaminationService;
 import com.example.csb869_medicinsko_dosie.service.SickLeaveService;
@@ -56,17 +57,17 @@ public class SickLeaveViewController {
 
     @Secured({"ROLE_DOCTOR", "ROLE_ADMIN"})
     @GetMapping("/new")
-    public String newForm(Model model) {
+    public String newForm(Model model, Authentication auth) {
         model.addAttribute("sickLeave", new SickLeaveDTO());
-        model.addAttribute("examinations", examinationService.getAllExaminations());
+        model.addAttribute("examinations", getExaminationsForUser(auth));
         return "sick-leaves/form";
     }
 
     @Secured({"ROLE_DOCTOR", "ROLE_ADMIN"})
     @PostMapping("/new")
-    public String create(@Valid @ModelAttribute("sickLeave") SickLeaveDTO dto, BindingResult br, Model model) {
+    public String create(@Valid @ModelAttribute("sickLeave") SickLeaveDTO dto, BindingResult br, Model model, Authentication auth) {
         if (br.hasErrors()) {
-            model.addAttribute("examinations", examinationService.getAllExaminations());
+            model.addAttribute("examinations", getExaminationsForUser(auth));
             return "sick-leaves/form";
         }
         sickLeaveService.createSickLeave(dto);
@@ -75,21 +76,36 @@ public class SickLeaveViewController {
 
     @Secured({"ROLE_DOCTOR", "ROLE_ADMIN"})
     @GetMapping("/{id}/edit")
-    public String editForm(@PathVariable Long id, Model model) {
+    public String editForm(@PathVariable Long id, Model model, Authentication auth) {
         model.addAttribute("sickLeave", sickLeaveService.getSickLeaveById(id));
-        model.addAttribute("examinations", examinationService.getAllExaminations());
+        model.addAttribute("examinations", getExaminationsForUser(auth));
         return "sick-leaves/form";
     }
 
     @Secured({"ROLE_DOCTOR", "ROLE_ADMIN"})
     @PostMapping("/{id}/edit")
-    public String update(@PathVariable Long id, @Valid @ModelAttribute("sickLeave") SickLeaveDTO dto, BindingResult br, Model model) {
+    public String update(@PathVariable Long id, @Valid @ModelAttribute("sickLeave") SickLeaveDTO dto, BindingResult br, Model model, Authentication auth) {
         if (br.hasErrors()) {
-            model.addAttribute("examinations", examinationService.getAllExaminations());
+            model.addAttribute("examinations", getExaminationsForUser(auth));
             return "sick-leaves/form";
         }
         sickLeaveService.updateSickLeave(id, dto);
         return "redirect:/sick-leaves";
+    }
+
+    private List<ExaminationDTO> getExaminationsForUser(Authentication auth) {
+        boolean isDoctor = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_DOCTOR"));
+        if (isDoctor) {
+            Long doctorId = userRepository.findByUsername(auth.getName())
+                    .map(u -> u.getDoctor() != null ? u.getDoctor().getId() : null)
+                    .orElse(null);
+            if (doctorId != null) {
+                return examinationService.getExaminationsByDoctor(doctorId);
+            }
+            return List.of();
+        }
+        return examinationService.getAllExaminations();
     }
 
     @Secured("ROLE_ADMIN")
