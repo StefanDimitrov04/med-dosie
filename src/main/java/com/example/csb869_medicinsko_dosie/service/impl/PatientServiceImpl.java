@@ -77,14 +77,14 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public List<PatientDTO> getPatientsByDiagnosis(Long diagnosisId) {
-        return patientRepository.findByDiagnosisId(diagnosisId).stream()
+        return patientRepository.findDistinctByExaminationsDiagnosesId(diagnosisId).stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<PatientDTO> getPatientsByDiagnosisName(String diagnosisName) {
-        return patientRepository.findByDiagnosisName(diagnosisName).stream()
+        return patientRepository.findDistinctByExaminationsDiagnosesName(diagnosisName).stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
