@@ -7,5 +7,4 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 public interface UserService extends UserDetailsService {
     void register(RegisterDTO registerDTO);
     void registerPublic(PublicRegisterDTO dto);
-    boolean usernameExists(String username);
 }

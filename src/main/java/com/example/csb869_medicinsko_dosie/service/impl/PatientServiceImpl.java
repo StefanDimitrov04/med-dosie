@@ -82,13 +82,6 @@ public class PatientServiceImpl implements PatientService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<PatientDTO> getPatientsByDiagnosisName(String diagnosisName) {
-        return patientRepository.findDistinctByExaminationsDiagnosesName(diagnosisName).stream()
-                .map(this::toDTO)
-                .collect(Collectors.toList());
-    }
-
     private PatientDTO toDTO(Patient patient) {
         PatientDTO dto = modelMapper.map(patient, PatientDTO.class);
         if (patient.getGeneralPractitioner() != null) {

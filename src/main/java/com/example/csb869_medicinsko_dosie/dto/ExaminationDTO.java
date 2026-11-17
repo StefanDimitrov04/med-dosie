@@ -40,6 +40,4 @@ public class ExaminationDTO {
     @NotNull(message = "Price is required")
     @DecimalMin(value = "0.0", inclusive = false)
     private BigDecimal price;
-
-    private boolean paidByPatient;
 }
