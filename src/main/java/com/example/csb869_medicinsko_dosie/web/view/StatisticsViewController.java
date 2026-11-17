@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @Controller
 @RequestMapping("/statistics")
 @RequiredArgsConstructor
-@Secured({"ROLE_ADMIN", "ROLE_DOCTOR"})
+@Secured("ROLE_ADMIN")
 public class StatisticsViewController {
 
     private final DiagnosisService diagnosisService;

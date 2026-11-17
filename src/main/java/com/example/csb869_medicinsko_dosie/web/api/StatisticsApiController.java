@@ -4,6 +4,7 @@ import com.example.csb869_medicinsko_dosie.dto.DiagnosisDTO;
 import com.example.csb869_medicinsko_dosie.dto.PatientDTO;
 import com.example.csb869_medicinsko_dosie.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -13,6 +14,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/stats")
+@Secured("ROLE_ADMIN")
 public class StatisticsApiController {
 
     private final PatientService patientService;
